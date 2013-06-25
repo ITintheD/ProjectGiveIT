@@ -10,7 +10,7 @@ namespace GiveIT.UI.Web.Models
 {
     public class UsersContext : DbContext
     {
-        public UsersContext()
+        public UsersContext() /// This is a test if this is here in the master it didn't work
             : base("DefaultConnection")
         {
         }
