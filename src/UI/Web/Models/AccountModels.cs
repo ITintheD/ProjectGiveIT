@@ -8,25 +8,6 @@ using System.Web.Security;
 
 namespace GiveIT.UI.Web.Models
 {
-    public class UsersContext : DbContext
-    {
-        public UsersContext() /// This is a test if this is here in the master it didn't work
-            : base("DefaultConnection")
-        {
-        }
-
-        public DbSet<UserProfile> UserProfiles { get; set; }
-    }
-
-    [Table("UserProfile")]
-    public class UserProfile
-    {
-        [Key]
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
-        public int UserId { get; set; }
-        public string UserName { get; set; }
-    }
-
     public class RegisterExternalLoginModel
     {
         [Required]
