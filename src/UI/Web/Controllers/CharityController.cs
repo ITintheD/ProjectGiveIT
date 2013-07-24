@@ -1,22 +1,29 @@
-﻿using System;
+﻿using DotNetOpenAuth.AspNet;
+using GiveIT.UI.Web.Models;
+using Microsoft.Web.WebPages.OAuth;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Transactions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
-using DotNetOpenAuth.AspNet;
-using Microsoft.Web.WebPages.OAuth;
 using WebMatrix.WebData;
-using GiveIT.UI.Web.Models;
+using Facebook;
+using System.ComponentModel.DataAnnotations;
+using System.Net;
+using System.Net.Mail;
+using Postal;
 
 namespace GiveIT.UI.Web.Controllers
 {
     [Authorize]
-    public class AccountController : Controller
+    public class CharityController : Controller
     {
+        MyDbContext db = new MyDbContext();
+
         //
-        // GET: /Account/Login
+        // GET: /Charity/Login
 
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
@@ -26,7 +33,7 @@ namespace GiveIT.UI.Web.Controllers
         }
 
         //
-        // POST: /Account/Login
+        // POST: /Charity/Login
 
         [HttpPost]
         [AllowAnonymous]
@@ -43,8 +50,8 @@ namespace GiveIT.UI.Web.Controllers
             return View(model);
         }
 
-        
-        // POST: /Account/LogOff
+        //
+        // POST: /CharityRegister/LogOff
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -55,10 +62,8 @@ namespace GiveIT.UI.Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-
-
         //
-        // POST: /Account/Disassociate
+        // POST: /Charity/Disassociate
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -86,8 +91,8 @@ namespace GiveIT.UI.Web.Controllers
             return RedirectToAction("Manage", new { Message = message });
         }
 
-        //
-        // GET: /Account/Manage
+        
+         // GET: /Charity/Manage
 
         public ActionResult Manage(ManageMessageId? message)
         {
@@ -102,7 +107,7 @@ namespace GiveIT.UI.Web.Controllers
         }
 
         //
-        // POST: /Account/Manage
+        // POST: /Charity/Manage
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -164,8 +169,86 @@ namespace GiveIT.UI.Web.Controllers
             return View(model);
         }
 
+        
+        // GET: /Charity/RegConfirmation
+
+        public ActionResult RegConfirmation()
+        {
+            return View();
+        }
+ 
+
         //
-        // POST: /Account/ExternalLogin
+        // GET: /Charity/Register
+        [AllowAnonymous]
+        public ActionResult Register()
+        {
+            return View();
+        }
+
+        //
+        // POST: /Charity/Register
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult Register(CharityRegister model)
+        {
+
+            if (ModelState.IsValid)
+            {
+                // Attempt to register the charity and store charity info to database
+                try
+                {
+
+                    WebSecurity.CreateUserAndAccount(model.CharityName.ToUpper(), model.Password,
+                        propertyValues: new
+                        {
+                            ContactFirstName = model.ContactFirstName,
+                            ContactLastName = model.ContactLastName,
+                            Title = model.Title,
+                            PhoneNumber = model.PhoneNumber,
+                            PhoneNoExtension = model.PhoneNoExtension,
+                            EmailAddress = model.EmailAddress,
+                            UserType = 1
+                        });
+
+                    db.Charities.Add(new Charity
+                    {
+                        CharityName = model.CharityName.ToUpper(),
+                        Mission = model.Mission,
+                        LocationServed = model.LocationServed,
+                        EIN = model.EIN,
+                        StreetAddress = model.StreetAddress,
+                        StreetAddress2 = model.StreetAddress2,
+                        City = model.City,
+                        State = model.State,
+                        ZipCode = model.ZipCode,
+                        UId = WebSecurity.GetUserId(model.CharityName.ToUpper())                  
+                    });
+
+                    db.SaveChanges();
+
+                    string EmailSubject = "Charity Join - Project Give I.T.";
+                    SendEmailConfirmation(model.EmailAddress, model.CharityName.ToUpper(), EmailSubject);
+
+                    WebSecurity.Login(model.CharityName.ToUpper(), model.Password);
+
+                    return RedirectToAction("RegConfirmation", "Charity");
+                }
+                catch (MembershipCreateUserException e)
+                {
+                    ModelState.AddModelError("", ErrorCodeToString(e.StatusCode));
+                }
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
+
+        //
+        // POST: /Charity/ExternalLogin
 
         [HttpPost]
         [AllowAnonymous]
@@ -175,47 +258,64 @@ namespace GiveIT.UI.Web.Controllers
             return new ExternalLoginResult(provider, Url.Action("ExternalLoginCallback", new { ReturnUrl = returnUrl }));
         }
 
-        ////
-        //// GET: /Account/ExternalLoginCallback
+        //
+        // GET: /Charity/ExternalLoginCallback
 
-        //[AllowAnonymous]
-        //public ActionResult ExternalLoginCallback(string returnUrl)
-        //{
-        //    AuthenticationResult result = OAuthWebSecurity.VerifyAuthentication(Url.Action("ExternalLoginCallback", new { ReturnUrl = returnUrl }));
-        //    if (!result.IsSuccessful)
-        //    {
-        //        return RedirectToAction("ExternalLoginFailure");
-        //    }
+        [AllowAnonymous]
+        public ActionResult ExternalLoginCallback(string returnUrl)
+        {
+            AuthenticationResult result = OAuthWebSecurity.VerifyAuthentication(Url.Action("ExternalLoginCallback", "Charity", new { ReturnUrl = returnUrl }));
+            if (!result.IsSuccessful)
+            {
+                return RedirectToAction("ExternalLoginFailure");
+            }
 
-        //    if (OAuthWebSecurity.Login(result.Provider, result.ProviderUserId, createPersistentCookie: false))
-        //    {
-        //        return RedirectToLocal(returnUrl);
-        //    }
+            if (OAuthWebSecurity.Login(result.Provider, result.ProviderUserId, createPersistentCookie: false))
+            {
+                return RedirectToLocal(returnUrl);
+            }
 
-        //    if (User.Identity.IsAuthenticated)
-        //    {
-        //        // If the current user is logged in add the new account
-        //        OAuthWebSecurity.CreateOrUpdateAccount(result.Provider, result.ProviderUserId, User.Identity.Name);
-        //        return RedirectToLocal(returnUrl);
-        //    }
-        //    else
-        //    {
-        //        // User is new, ask for their desired membership name
-        //        string loginData = OAuthWebSecurity.SerializeProviderUserId(result.Provider, result.ProviderUserId);
-        //        ViewBag.ProviderDisplayName = OAuthWebSecurity.GetOAuthClientData(result.Provider).DisplayName;
-        //        var x = OAuthWebSecurity.GetOAuthClientData(result.Provider);
-        //        ViewBag.ReturnUrl = returnUrl;
-        //        return View("ExternalLoginConfirmation", new RegisterExternalLoginModel { UserName = result.UserName, ExternalLoginData = loginData });
-        //    }
-        //}
+            if (result.ExtraData.Keys.Contains("accesstoken"))
+            {
+                Session["facebooktoken"] = result.ExtraData["accesstoken"];
+            }
+
+            if (User.Identity.IsAuthenticated)
+            {
+                // If the current user is logged in add the new account
+                OAuthWebSecurity.CreateOrUpdateAccount(result.Provider, result.ProviderUserId, User.Identity.Name);
+                return RedirectToLocal(returnUrl);
+            }
+            else
+            {
+                // User is new, ask for their desired membership name
+                string loginData = OAuthWebSecurity.SerializeProviderUserId(result.Provider, result.ProviderUserId);
+                ViewBag.ProviderDisplayName = OAuthWebSecurity.GetOAuthClientData(result.Provider).DisplayName;
+                var x = OAuthWebSecurity.GetOAuthClientData(result.Provider);
+
+                var client = new FacebookClient(Session["facebooktoken"].ToString());
+                dynamic response = client.Get("me", new { fields = "first_name,last_name,email" });
+
+                return View("ExternalLoginAndRegistration", new CharityExternalRegister
+                {
+                    ExternalLoginData = loginData,
+                    EContactFirstName = response["first_name"],
+                    EContactLastName = response["last_name"],
+                    EEmailAddress = response["email"]
+
+                });
+            }
+        }
 
         //
-        // POST: /Account/ExternalLoginConfirmation
+        // POST: /Charity/ExternalLoginAndRegistration
+        // User confirm to register account with external Log In service using the info retrieved back from external service provider and save the info 
+        // to database
 
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult ExternalLoginConfirmation(RegisterExternalLoginModel model, string returnUrl)
+        public ActionResult ExternalLoginAndRegistration(CharityExternalRegister model, string returnUrl)
         {
             string provider = null;
             string providerUserId = null;
@@ -230,18 +330,46 @@ namespace GiveIT.UI.Web.Controllers
                 // Insert a new user into the database
                 using (MyDbContext db = new MyDbContext())
                 {
-                    User user = db.Users.FirstOrDefault(u => u.UserName.ToLower() == model.UserName.ToLower());
+                    User user = db.Users.FirstOrDefault(u => u.UserName.ToLower() == model.ECharityName.ToLower());
                     // Check if user already exists
                     if (user == null)
                     {
                         // Insert name into the profile table
-                        db.Users.Add(new User { UserName = model.UserName });
+                        User newUser = db.Users.Add(new User
+                        {
+                            UserName = model.ECharityName.ToUpper(),
+                            ContactFirstName = model.EContactFirstName,
+                            ContactLastName = model.EContactLastName,
+                            Title = model.ETitle,
+                            PhoneNumber = model.EPhoneNumber,
+                            PhoneNoExtension = model.EPhoneNoExtension,
+                            EmailAddress = model.EEmailAddress, 
+                            UserType = 1
+                        });
+
+                        db.Charities.Add(new Charity
+                        {
+                            CharityName = model.ECharityName.ToUpper(),
+                            Mission = model.EMission,
+                            LocationServed = model.ELocationServed,
+                            EIN = model.EEIN,
+                            StreetAddress = model.EStreetAddress,
+                            StreetAddress2 = model.EStreetAddress2,
+                            City = model.ECity,
+                            State = model.EState,
+                            ZipCode = model.EZipCode,
+                            UId = newUser.UserId
+                        });
+
                         db.SaveChanges();
 
-                        OAuthWebSecurity.CreateOrUpdateAccount(provider, providerUserId, model.UserName);
+                        OAuthWebSecurity.CreateOrUpdateAccount(provider, providerUserId, model.ECharityName.ToUpper());
+
                         OAuthWebSecurity.Login(provider, providerUserId, createPersistentCookie: false);
 
-                        return RedirectToLocal(returnUrl);
+                        string EmailSubject = "Charity Join - Project Give I.T.";
+                        SendEmailConfirmation(model.EEmailAddress, model.ECharityName.ToUpper(), EmailSubject);
+                        return RedirectToAction("RegConfirmation", "Charity");
                     }
                     else
                     {
@@ -255,21 +383,13 @@ namespace GiveIT.UI.Web.Controllers
             return View(model);
         }
 
-        //
-        // GET: /Account/ExternalLoginFailure
-
-        //[AllowAnonymous]
-        //public ActionResult ExternalLoginFailure()
-        //{
-        //    return View();
-        //}
-
+ 
         [AllowAnonymous]
         [ChildActionOnly]
         public ActionResult ExternalLoginsList(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
-            return PartialView("_ExternalLoginsListPartial", OAuthWebSecurity.RegisteredClientData);
+            return PartialView("MyExternalLoginsListPartial", OAuthWebSecurity.RegisteredClientData);
         }
 
         [ChildActionOnly]
@@ -291,9 +411,11 @@ namespace GiveIT.UI.Web.Controllers
 
             ViewBag.ShowRemoveButton = externalLogins.Count > 1 || OAuthWebSecurity.HasLocalAccount(WebSecurity.GetUserId(User.Identity.Name));
             return PartialView("_RemoveExternalLoginsPartial", externalLogins);
-        }
+        }  
+
 
         #region Helpers
+
         private ActionResult RedirectToLocal(string returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl))
@@ -328,6 +450,17 @@ namespace GiveIT.UI.Web.Controllers
             {
                 OAuthWebSecurity.RequestAuthentication(Provider, ReturnUrl);
             }
+        }
+
+
+
+        private void SendEmailConfirmation(string to, string username, string subject)
+        {
+            dynamic email = new Email("RegistrationConfirmationEmail");
+            email.To = to;
+            email.Subject = subject;
+            email.UserName = username;
+            email.Send();
         }
 
         private static string ErrorCodeToString(MembershipCreateStatus createStatus)
@@ -368,5 +501,15 @@ namespace GiveIT.UI.Web.Controllers
             }
         }
         #endregion
+
+
+        protected override void Dispose(bool disposing)
+        {
+            if (db != null)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
     }
 }

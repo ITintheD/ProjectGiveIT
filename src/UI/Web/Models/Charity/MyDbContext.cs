@@ -6,13 +6,16 @@ using System.Web;
 
 namespace GiveIT.UI.Web.Models
 {
-    public class UIWebDbContext : DbContext
+    public class MyDbContext : DbContext
     {
-        public UIWebDbContext()
-            : base("name=DefaultConnection") 
-        { 
+        public MyDbContext()
+            : base("name=DefaultConnection")
+        {
         }
         public DbSet<Charity> Charities { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<Volunteer> Volunteers { get; set; }
+       
     }
 }

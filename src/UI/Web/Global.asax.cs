@@ -17,6 +17,7 @@ namespace GiveIT.UI.Web
     {
         protected void Application_Start()
         {
+
             WebSecurity.InitializeDatabaseConnection("DefaultConnection", "UserProfile", "UserId", "UserName", autoCreateTables: true);
             AreaRegistration.RegisterAllAreas();
 

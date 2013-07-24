@@ -8,25 +8,7 @@ using System.Web.Security;
 
 namespace GiveIT.UI.Web.Models
 {
-    public class UsersContext : DbContext
-    {
-        public UsersContext() /// This is a test if this is here in the master it didn't work
-            : base("DefaultConnection")
-        {
-        }
 
-        public DbSet<UserProfile> UserProfiles { get; set; }
-    }
-
-    [Table("UserProfile")]
-    public class UserProfile
-    {
-        [Key]
-        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
-        public int UserId { get; set; }
-        public string UserName { get; set; }
-
-    }
 
     public class RegisterExternalLoginModel
     {
@@ -35,8 +17,6 @@ namespace GiveIT.UI.Web.Models
         public string UserName { get; set; }
 
         public string ExternalLoginData { get; set; }
-
-        public string EmailAddress { get; set; }
     }
 
     public class LocalPasswordModel
@@ -73,23 +53,23 @@ namespace GiveIT.UI.Web.Models
         public bool RememberMe { get; set; }
     }
 
-    public class RegisterModel
-    {
-        [Required]
-        [Display(Name = "User name")]
-        public string UserName { get; set; }
+    //public class RegisterModel
+    //{
+    //    [Required]
+    //    [Display(Name = "User name")]
+    //    public string UserName { get; set; }
 
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
-        [DataType(DataType.Password)]
-        [Display(Name = "Password")]
-        public string Password { get; set; }
+    //    [Required]
+    //    [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+    //    [DataType(DataType.Password)]
+    //    [Display(Name = "Password")]
+    //    public string Password { get; set; }
 
-        [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        public string ConfirmPassword { get; set; }
-    }
+    //    [DataType(DataType.Password)]
+    //    [Display(Name = "Confirm password")]
+    //    [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+    //    public string ConfirmPassword { get; set; }
+    //}
 
     public class ExternalLogin
     {
@@ -97,4 +77,5 @@ namespace GiveIT.UI.Web.Models
         public string ProviderDisplayName { get; set; }
         public string ProviderUserId { get; set; }
     }
+   
 }
