@@ -1,0 +1,178 @@
+﻿@model GiveIT.UI.Web.Models.CharityExternalRegister
+
+@{
+    ViewBag.Title = "Charity External Login Confirmation";
+}
+
+
+<div>
+    <section id="RegisterForm">
+    @using (Html.BeginForm("ExternalLoginAndRegistration", "Charity", FormMethod.Post, new { name = "RegisterCharity", ReturnUrl = ViewBag.ReturnUrl }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+    
+
+            <fieldset>
+                <legend>Charity</legend>
+
+                <p>
+                    You've successfully authenticated with <strong>@ViewBag.ProviderDisplayName</strong>.
+                    Please provide some extra information for this site below and click the Join button to finish
+                    registration.
+                </p>
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.ECharityName)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.ECharityName)
+                    @Html.ValidationMessageFor(model => model.ECharityName)
+                </div>
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.EMission)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.EMission)
+                    @Html.ValidationMessageFor(model => model.EMission)
+                </div>
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.ELocationServed)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.ELocationServed)
+                    @Html.ValidationMessageFor(model => model.ELocationServed)
+                </div>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.EEIN)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.EEIN)
+                    @Html.ValidationMessageFor(model => model.EEIN)
+                </div>
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.EContactFirstName)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.EContactFirstName)
+                    @Html.ValidationMessageFor(model => model.EContactFirstName)
+                </div>
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.EContactLastName)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.EContactLastName)
+                    @Html.ValidationMessageFor(model => model.EContactLastName)
+                </div>
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.ETitle)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.ETitle)
+                    @Html.ValidationMessageFor(model => model.ETitle)
+                </div>
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.EPhoneNumber)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.EPhoneNumber)
+                    @Html.ValidationMessageFor(model => model.EPhoneNumber)
+                </div>
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.EPhoneNoExtension)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.EPhoneNoExtension)
+                    @Html.ValidationMessageFor(model => model.EPhoneNoExtension)
+                </div>
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.EEmailAddress)
+                </div>
+                <div class="editor-field">
+
+                    @Html.EditorFor(model => model.EEmailAddress)
+                    @Html.ValidationMessageFor(model => model.EEmailAddress)
+                </div>
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.EConfirmEmailAddress)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.EConfirmEmailAddress)
+                    @Html.ValidationMessageFor(model => model.EConfirmEmailAddress)
+                </div>
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.EStreetAddress)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.EStreetAddress)
+                    @Html.ValidationMessageFor(model => model.EStreetAddress)
+                </div>
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.EStreetAddress2)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.EStreetAddress2)
+                    @Html.ValidationMessageFor(model => model.EStreetAddress2)
+                </div>
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.ECity)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.ECity)
+                    @Html.ValidationMessageFor(model => model.ECity)
+                </div>
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.EState)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.EState)
+                    @Html.ValidationMessageFor(model => model.EState)
+                </div>
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.EZipCode)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.EZipCode)
+                    @Html.ValidationMessageFor(model => model.EZipCode)
+                </div>
+              @Html.HiddenFor(m => m.ExternalLoginData)
+            <p>
+                <input type="submit" value="Join" />
+                @*<input type="reset" value="Clear Fields">*@
+                <button onclick="clearFields()">Clear Fields</button>
+            </p>
+        </fieldset>
+        
+        <script type ="text/javascript">
+
+        function clearFields() {
+            var form = document.forms["RegisterCharity"];
+            $(form).find("input[type='text']").attr("value", "");
+            $(form).find("input[type='textarea']").attr("value", "");
+        }
+    </script>
+        
+    }
+    </section>
+
+
+</div>
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,5 +1,4 @@
-﻿using GiveIT.UI.Web.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -9,15 +8,16 @@ namespace GiveIT.UI.Web.Controllers
 {
     public class HomeController : Controller
     {
-       
         public ActionResult Index()
         {
+            ViewBag.Message = "Modify this template to jump-start your ASP.NET MVC application.";
+
             return View();
         }
 
-        public ActionResult About()
+        public ActionResult HowItWorks()
         {
-            ViewBag.Message = "Your app description page.";
+            //ViewBag.Message = "Your app description page.";
 
             return View();
         }
@@ -28,7 +28,5 @@ namespace GiveIT.UI.Web.Controllers
 
             return View();
         }
-
- 
     }
 }
