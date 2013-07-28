@@ -8,14 +8,14 @@
 
 <div>
     <section id="ExternalRegisterForm">
-        @Html.Action("ExternalLoginsList", "Charity", new { name = "RegisterCharity", ReturnUrl = ViewBag.ReturnUrl })
+        @Html.Action("ExternalLoginsList", "Charity", new { ReturnUrl = ViewBag.ReturnUrl })
     </section>
     
 </div>
 
 <div>
     <section id="RegisterForm">
-    @using (Html.BeginForm("Register", "Charity", new { ReturnUrl = ViewBag.ReturnUrl }))
+    @using (Html.BeginForm("Register", "Charity", new { name = "RegisterCharity", ReturnUrl = ViewBag.ReturnUrl }))
     {
         @Html.AntiForgeryToken()
         @Html.ValidationSummary(true)
@@ -33,11 +33,12 @@
                     @Html.ValidationMessageFor(model => model.CharityName)
                 </div>
 
+
                 <div class="editor-label">
                     @Html.LabelFor(model => model.Mission)
                 </div>
                 <div class="editor-field">
-                    @Html.EditorFor(model => model.Mission)
+                    @Html.TextAreaFor(model => model.Mission)
                     @Html.ValidationMessageFor(model => model.Mission)
                 </div>
 
@@ -168,23 +169,24 @@
                     @Html.ValidationMessageFor(model => model.ZipCode)
                 </div>
               
-            <p>
-                <input type="submit" value="Join" />
-                <button onclick="clearFields()">Clear Fields</button>
-            </p>
-        </fieldset>
+                <div class = "input-submit">
+                    <input type="submit" value="Join" />
+                    @*<input type="reset"  value="Clear Fields" />*@
+                    <button onclick="clearFields()">Clear Fields</button>
+                </div>
+            
+            </fieldset>
         
-        <script type ="text/javascript">
+            <script type ="text/javascript">
 
-            function clearFields() {
-                var form = document.forms["RegisterCharity"];
-                $(form).find("input[type='text']").attr("value", "");
-                $(form).find("input[type='textarea']").attr("value", "");
-
-            }
-        </script>
-    }
-    </section>
+                 function clearFields() {
+                     var form = document.forms["RegisterCharity"];
+                     $(form).find("input[type='text']").attr("value", "");
+                     $(form).find("input[type='textarea']").attr("value", "");
+                 }
+           </script>
+     }
+     </section>
 </div>
 
 

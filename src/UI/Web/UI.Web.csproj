@@ -308,6 +308,9 @@
     <Content Include="Views\Emails\RegistrationConfirmationEmail.cshtml" />
     <Content Include="Views\Charity\ExternalLoginAndRegistration.cshtml" />
     <Content Include="Views\Charity\MyExternalLoginsListPartial.cshtml" />
+    <Content Include="Views\Charity\Login.cshtml" />
+    <Content Include="Views\Account\VolunteerLegalAgreement.cshtml" />
+    <Content Include="Views\Account\OrganizationLegalAgreement.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
