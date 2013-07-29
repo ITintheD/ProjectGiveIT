@@ -39,10 +39,30 @@
         <footer>
             <div class="content-wrapper">
                 <div class="float-left">
-                    <p>&copy; @DateTime.Now.Year - My ASP.NET MVC Application</p>
+                    @*<p>&copy; @DateTime.Now.Year - My ASP.NET MVC Application</p>*@
+                    <button name="Volunteer", onclick="openVolunteerWindow()">Volunteer Legal Agreement</button>
+                   
                 </div>
+                <div class="float-right">
+                    <button name="Orgnization", onclick="openOrganizationWindow()">Organization Legal Agreement</button>
+                </div>               
             </div>
         </footer>
+
+        <script type ="text/javascript">
+            function openVolunteerWindow() {
+
+                window.open('@Url.Action("PopupVol", "Account")', '_blank',
+                    'height=500, width=600, scrollbars=yes, resizable=1,modal=yes, location=0');
+            }
+
+            function openOrganizationWindow() {
+
+                window.open('@Url.Action("PopupOrg", "Account")', '_blank',
+                               'height=500, width=600, scrollbars=yes, resizable=1,modal=yes, location=0');
+            }
+           
+        </script>
 
         @Scripts.Render("~/bundles/jquery")
         @RenderSection("scripts", required: false)

@@ -201,7 +201,7 @@ namespace GiveIT.UI.Web.Controllers
                 try
                 {
 
-                    WebSecurity.CreateUserAndAccount(model.CharityName.ToUpper(), model.Password,
+                    WebSecurity.CreateUserAndAccount(model.EmailAddress.ToUpper(), model.Password,
                         propertyValues: new
                         {
                             ContactFirstName = model.ContactFirstName,
@@ -224,15 +224,15 @@ namespace GiveIT.UI.Web.Controllers
                         City = model.City,
                         State = model.State,
                         ZipCode = model.ZipCode,
-                        UId = WebSecurity.GetUserId(model.CharityName.ToUpper())                  
+                        UId = WebSecurity.GetUserId(model.EmailAddress.ToUpper())                  
                     });
 
                     db.SaveChanges();
 
                     string EmailSubject = "Charity Join - Project Give I.T.";
-                    SendEmailConfirmation(model.EmailAddress, model.CharityName.ToUpper(), EmailSubject);
+                    SendEmailConfirmation(model.EmailAddress, model.EmailAddress.ToUpper(), EmailSubject);
 
-                    WebSecurity.Login(model.CharityName.ToUpper(), model.Password);
+                    WebSecurity.Login(model.EmailAddress.ToUpper(), model.Password);
 
                     return RedirectToAction("RegConfirmation", "Charity");
                 }
@@ -330,14 +330,14 @@ namespace GiveIT.UI.Web.Controllers
                 // Insert a new user into the database
                 using (MyDbContext db = new MyDbContext())
                 {
-                    User user = db.Users.FirstOrDefault(u => u.UserName.ToLower() == model.ECharityName.ToLower());
+                    User user = db.Users.FirstOrDefault(u => u.UserName.ToLower() == model.EEmailAddress.ToLower());
                     // Check if user already exists
                     if (user == null)
                     {
                         // Insert name into the profile table
                         User newUser = db.Users.Add(new User
                         {
-                            UserName = model.ECharityName.ToUpper(),
+                            UserName = model.EEmailAddress.ToUpper(),
                             ContactFirstName = model.EContactFirstName,
                             ContactLastName = model.EContactLastName,
                             Title = model.ETitle,
@@ -349,7 +349,7 @@ namespace GiveIT.UI.Web.Controllers
 
                         db.Charities.Add(new Charity
                         {
-                            CharityName = model.ECharityName.ToUpper(),
+                            CharityName = model.ECharityName,
                             Mission = model.EMission,
                             LocationServed = model.ELocationServed,
                             EIN = model.EEIN,
@@ -363,12 +363,12 @@ namespace GiveIT.UI.Web.Controllers
 
                         db.SaveChanges();
 
-                        OAuthWebSecurity.CreateOrUpdateAccount(provider, providerUserId, model.ECharityName.ToUpper());
+                        OAuthWebSecurity.CreateOrUpdateAccount(provider, providerUserId, model.EEmailAddress.ToUpper());
 
                         OAuthWebSecurity.Login(provider, providerUserId, createPersistentCookie: false);
 
                         string EmailSubject = "Charity Join - Project Give I.T.";
-                        SendEmailConfirmation(model.EEmailAddress, model.ECharityName.ToUpper(), EmailSubject);
+                        SendEmailConfirmation(model.EEmailAddress, model.EEmailAddress.ToUpper(), EmailSubject);
                         return RedirectToAction("RegConfirmation", "Charity");
                     }
                     else

@@ -151,19 +151,18 @@
               @Html.HiddenFor(m => m.ExternalLoginData)
             <p>
                 <input type="submit" value="Join" />
-                @*<input type="reset" value="Clear Fields">*@
                 <button onclick="clearFields()">Clear Fields</button>
             </p>
         </fieldset>
         
-        <script type ="text/javascript">
+            <script type ="text/javascript">
 
-        function clearFields() {
-            var form = document.forms["RegisterCharity"];
-            $(form).find("input[type='text']").attr("value", "");
-            $(form).find("input[type='textarea']").attr("value", "");
-        }
-    </script>
+                function clearFields() {
+                    var form = document.forms["RegisterCharity"];
+                    $(form).find("input[type='text']").attr("value", "");
+                    $(form).find("textarea").attr("value", "");
+                }
+           </script>
         
     }
     </section>
