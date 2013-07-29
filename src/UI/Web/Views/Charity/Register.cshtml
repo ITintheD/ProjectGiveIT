@@ -15,7 +15,7 @@
 
 <div>
     <section id="RegisterForm">
-    @using (Html.BeginForm("Register", "Charity", new { name = "RegisterCharity", ReturnUrl = ViewBag.ReturnUrl }))
+    @using (Html.BeginForm("Register", "Charity", FormMethod.Post, new { name = "RegisterCharity", ReturnUrl = ViewBag.ReturnUrl }))
     {
         @Html.AntiForgeryToken()
         @Html.ValidationSummary(true)
@@ -39,6 +39,7 @@
                 </div>
                 <div class="editor-field">
                     @Html.TextAreaFor(model => model.Mission)
+                    @*@Html.EditorFor(model => model.Mission)*@
                     @Html.ValidationMessageFor(model => model.Mission)
                 </div>
 
@@ -171,7 +172,6 @@
               
                 <div class = "input-submit">
                     <input type="submit" value="Join" />
-                    @*<input type="reset"  value="Clear Fields" />*@
                     <button onclick="clearFields()">Clear Fields</button>
                 </div>
             
@@ -182,7 +182,8 @@
                  function clearFields() {
                      var form = document.forms["RegisterCharity"];
                      $(form).find("input[type='text']").attr("value", "");
-                     $(form).find("input[type='textarea']").attr("value", "");
+                     $(form).find("input[type='password']").attr("value", "");
+                     $(form).find("textarea").attr("value", "");
                  }
            </script>
      }
