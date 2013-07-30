@@ -25,6 +25,22 @@ namespace GiveIT.UI.Web.Controllers
             return View();
         }
 
+        [AllowAnonymous]
+        public ActionResult PopupVol() 
+        {
+            
+            return PartialView("VolunteerLegalAgreement");
+        }
+
+        [AllowAnonymous]
+        public ActionResult PopupOrg()
+        {
+
+            return PartialView("OrganizationLegalAgreement");
+        }
+
+
+
         //
         // POST: /Account/Login
 

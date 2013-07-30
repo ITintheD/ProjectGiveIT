@@ -25,7 +25,7 @@ namespace GiveIT.UI.Web.Models
         [RegularExpression(@"^\d{2}-\d{7}$",
                ErrorMessage = "EIN entered is not valid. Please try again.")]
         [StringLength(10)]
-        [Display(Name = "EIN")]
+        [Display(Name = "EIN (Format: xx-xxxxxxxxx) *")]
         public string EEIN { get; set; }
 
 
@@ -44,7 +44,7 @@ namespace GiveIT.UI.Web.Models
         public string ETitle { get; set; }
 
         [Required]
-        [Display(Name = "Telephone Number *")]
+        [Display(Name = "Telephone Number (Format: (xxx)xxx-xxxx) *")]
         [RegularExpression(@"^\(?([1-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$",
                ErrorMessage = "Entered phone number format is not valid.  Please try again.")]
         [StringLength(20)]
@@ -55,7 +55,7 @@ namespace GiveIT.UI.Web.Models
         public string EPhoneNoExtension { get; set; }
 
         [Required]
-        [Display(Name = "Email Address *")]
+        [Display(Name = "Email Address (served as User Name) *")]
         [RegularExpression(@"\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*", ErrorMessage = "Please enter a valid email address.")]
         [StringLength(100)]
         public string EEmailAddress { get; set; }
